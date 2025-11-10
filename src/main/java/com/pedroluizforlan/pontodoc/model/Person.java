@@ -1,11 +1,10 @@
 package com.pedroluizforlan.pontodoc.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,22 +15,34 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "person")
 @Data
 @Getter
 @Setter
-public class User {
+public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String email;
+    @Column(nullable=false)
+    private String name;
 
-    private String password;
+    @Column(nullable=false)
+    private LocalDate birthday;
 
-    @Enumerated(EnumType.STRING)
-    private UserType useType;
+    @Column(nullable=false, unique=true, length=11)
+    private String cpf;
+
+    private String address;
+
+    @Column(nullable=false, length=8)
+    private String cep;
+
+    @Column(length=10)
+    private String gender;
+
+    @Column(name="number",nullable=false, unique=true, length=11)
+    private String cellphoneNumber;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -41,13 +52,4 @@ public class User {
 
     @Column(name = "deleated_at")
     private LocalDateTime deleatedAt;
-
-    @Column(name="email_verified")
-    private boolean verifiedEmail;
-    
-    public enum UserType {
-        MANAGER,ASSESSOR,EMPLOYEE;
-    }
-
-
 }

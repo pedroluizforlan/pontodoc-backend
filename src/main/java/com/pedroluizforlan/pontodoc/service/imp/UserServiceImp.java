@@ -31,7 +31,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User create(User entity) {
-        entity.setCreatedDate(LocalDateTime.now());
+        entity.setCreatedAt(LocalDateTime.now());
         return userRepository.save(entity);
     }
 
@@ -39,9 +39,6 @@ public class UserServiceImp implements UserService {
     public User update(Long id, User entity) {
         User existingUser = findById(id);
 
-        if (entity.getName() != null) {
-            existingUser.setName(entity.getName());
-        }
         if (entity.getEmail() != null) {
             existingUser.setEmail(entity.getEmail());
         }
@@ -51,15 +48,18 @@ public class UserServiceImp implements UserService {
         if (entity.getUseType() != null) {
             existingUser.setUseType(entity.getUseType());
         }
+        if (entity.isVerifiedEmail()) {
+            existingUser.setVerifiedEmail(entity.isVerifiedEmail());
+        }
 
-        existingUser.setUploadedDate(LocalDateTime.now());
+        existingUser.setUploadedAt(LocalDateTime.now());
         return userRepository.save(existingUser);
     }
 
     @Override
     public User delete(Long id) {
         User user = findById(id);
-        user.setDeleatedDate(LocalDateTime.now());
+        user.setDeleatedAt(LocalDateTime.now());
         return userRepository.save(user);
     }
 
