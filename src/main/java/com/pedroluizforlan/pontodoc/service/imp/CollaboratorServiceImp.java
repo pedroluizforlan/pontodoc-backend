@@ -35,13 +35,18 @@ public class CollaboratorServiceImp implements CollaboratorService{
         this.employeeService = employeeService;
         this.userService = userService;
     }
-
+    /*
+     * @TODO Entender motivo de não estar listando
+     */
     @Override
     public List<Collaborator> findAll() {
         var collaborators = collaboratorRepository.findAll();
         return collaborators;
     }
 
+     /*
+     * @TODO Entender motivo de não estar listando
+     */
     @Override
     public Collaborator findById(Long id) {
         return collaboratorRepository
@@ -86,6 +91,9 @@ public class CollaboratorServiceImp implements CollaboratorService{
         return collaboratorRepository.save(collaboratorToUpdate);
     }
 
+    /*
+    * @TODO Avaliar pq não está apagando
+    */
     @Override
     public Collaborator delete(Long id) {
         Collaborator collaborator = findById(id);

@@ -37,6 +37,9 @@ public class EmployeeServiceImp implements EmployeeService{
         return employeeRespository.save(employee);
     }
 
+    /*
+    * @TODO Validar quando o dado for == null. Não ta atualizando o leadership.
+    */
     @Override
     public Employee update(Long id, Employee employee) {    
         Employee employeeToUpdate = findById(id);
