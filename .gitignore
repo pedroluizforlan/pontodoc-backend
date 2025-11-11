@@ -38,3 +38,5 @@ build/
 # API test files
 *.sh
 *requests
+src/main/resources/app.key
+src/main/resources/app.pub
