@@ -7,12 +7,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.pedroluizforlan.pontodoc.model.Person;
 import com.pedroluizforlan.pontodoc.service.PersonService;
 
+@RestController
+@RequestMapping("/api/person")
 public class PersonController {
-        private PersonService personService;
+    
+    private final PersonService personService;
 
     public PersonController(PersonService personService){
         this.personService = personService;

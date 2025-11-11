@@ -82,7 +82,7 @@ public class CollaboratorServiceImp implements CollaboratorService{
             collaboratorToUpdate.setUser(userUpdated);
         }
 
-        collaboratorToUpdate.setUploadedAt(LocalDateTime.now());
+        collaboratorToUpdate.setUpdatedAt(LocalDateTime.now());
         return collaboratorRepository.save(collaboratorToUpdate);
     }
 

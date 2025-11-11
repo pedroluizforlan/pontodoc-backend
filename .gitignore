@@ -34,3 +34,7 @@ build/
 
 
 .env
+
+# API test files
+*.sh
+*requests

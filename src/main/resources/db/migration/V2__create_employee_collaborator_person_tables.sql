@@ -6,7 +6,7 @@ CREATE TABLE employees (
     manager_id BIGINT,                                  
     leadership BOOLEAN,                                  
     created_at TIMESTAMP,                                
-    uploaded_at TIMESTAMP,                               
+    updeted_at TIMESTAMP,                               
     deleted_at TIMESTAMP,                                
     CONSTRAINT fk_manager FOREIGN KEY (manager_id)      
         REFERENCES employees(id) ON DELETE SET NULL      
@@ -22,7 +22,7 @@ CREATE TABLE persons (
     gender VARCHAR(10),                                  
     cellphone_number VARCHAR(11) NOT NULL UNIQUE,        
     created_at TIMESTAMP,                                 
-    uploaded_at TIMESTAMP,                                
+    updated_at TIMESTAMP,                                
     deleted_at TIMESTAMP                                  
 );
 
@@ -32,7 +32,7 @@ CREATE TABLE collaborators (
     user_id BIGINT,                                     
     person_id BIGINT,                                    
     created_at TIMESTAMP,                                
-    uploaded_at TIMESTAMP,                                
+    updated_at TIMESTAMP,                                
     deleted_at TIMESTAMP,                                
     CONSTRAINT fk_employee FOREIGN KEY (employee_id)    
         REFERENCES employees(id) ON DELETE CASCADE,       

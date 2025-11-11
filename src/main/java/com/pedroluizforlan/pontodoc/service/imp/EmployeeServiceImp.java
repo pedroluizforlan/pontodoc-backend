@@ -4,14 +4,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.stereotype.Service;
+
 import com.pedroluizforlan.pontodoc.model.Employee;
 import com.pedroluizforlan.pontodoc.repository.EmployeeRespository;
 import com.pedroluizforlan.pontodoc.service.EmployeeService;
 import com.pedroluizforlan.pontodoc.service.exceptions.BusinessException;
 
+@Service
 public class EmployeeServiceImp implements EmployeeService{
 
-    private EmployeeRespository employeeRespository;
+    private final EmployeeRespository employeeRespository;
 
     public EmployeeServiceImp(EmployeeRespository employeeRespository){
         this.employeeRespository = employeeRespository;
@@ -58,7 +61,7 @@ public class EmployeeServiceImp implements EmployeeService{
             employeeToUpdate.setDepartment(employee.getDepartment());
         }
 
-        employeeToUpdate.setUploadedAt(LocalDateTime.now());
+        employeeToUpdate.setUpdatedAt(LocalDateTime.now());
 
         return employeeRespository.save(employeeToUpdate);
     }

@@ -52,7 +52,7 @@ public class UserServiceImp implements UserService {
             existingUser.setVerifiedEmail(user.isVerifiedEmail());
         }
 
-        existingUser.setUploadedAt(LocalDateTime.now());
+        existingUser.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(existingUser);
     }
 

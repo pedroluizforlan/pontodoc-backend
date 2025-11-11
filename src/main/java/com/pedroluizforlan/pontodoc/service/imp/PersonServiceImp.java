@@ -4,13 +4,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.stereotype.Service;
+
 import com.pedroluizforlan.pontodoc.model.Person;
 import com.pedroluizforlan.pontodoc.repository.PersonRepository;
 import com.pedroluizforlan.pontodoc.service.PersonService;
 
+@Service
 public class PersonServiceImp implements PersonService {
 
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
     public PersonServiceImp(PersonRepository personRepository){
         this.personRepository = personRepository;
@@ -51,8 +54,8 @@ public class PersonServiceImp implements PersonService {
             personToUpdate.setAddress(person.getAddress());
         }
 
-        if(!Objects.equals(personToUpdate.getCellphoneNumber(), person.getCellphoneNumber())){
-            personToUpdate.setCellphoneNumber(person.getCellphoneNumber());
+        if(!Objects.equals(personToUpdate.getNumber(), person.getNumber())){
+            personToUpdate.setNumber(person.getNumber());
         }
 
         if(!Objects.equals(personToUpdate.getCep(), person.getCep())){
@@ -67,7 +70,7 @@ public class PersonServiceImp implements PersonService {
             personToUpdate.setGender(person.getGender());
         }
 
-        personToUpdate.setUploadedAt(LocalDateTime.now());
+        personToUpdate.setUpdatedAt(LocalDateTime.now());
         return personRepository.save(personToUpdate);
     }
 

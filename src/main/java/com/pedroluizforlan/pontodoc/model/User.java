@@ -36,8 +36,8 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "uploaded_at")
-    private LocalDateTime uploadedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @Column(name = "deleated_at")
     private LocalDateTime deleatedAt;

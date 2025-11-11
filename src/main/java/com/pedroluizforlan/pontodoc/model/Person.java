@@ -15,7 +15,7 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name = "person")
+@Table(name = "persons")
 @Data
 @Getter
 @Setter
@@ -41,15 +41,15 @@ public class Person {
     @Column(length=10)
     private String gender;
 
-    @Column(name="number",nullable=false, unique=true, length=11)
-    private String cellphoneNumber;
+    @Column(name="cellphone_number",nullable=false, unique=true, length=11)
+    private String number;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "uploaded_at")
-    private LocalDateTime uploadedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-    @Column(name = "deleated_at")
+    @Column(name = "deleted_at")
     private LocalDateTime deleatedAt;
 }
