@@ -1,9 +1,8 @@
 services:
-  app:
-    image: pontodoc-backend
+  backend:
     build:
       context: .
-    container_name: app
+      dockerfile: Dockerfile
     depends_on:
       - database
     environment:

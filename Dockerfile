@@ -1,21 +1,26 @@
-FROM amazoncorretto:21 AS builder
+# Etapa de build
+FROM eclipse-temurin:21-jdk AS builder
 
-RUN yum update -y && yum install -y tar gzip
+WORKDIR /app
 
+# Copia arquivos do Maven Wrapper e pom.xml
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
 RUN chmod +x ./mvnw
-
 RUN ./mvnw dependency:go-offline -B
 
+# Copia o código-fonte
 COPY src src
 
+# Compila o projeto
 RUN ./mvnw clean package -DskipTests
 
-FROM amazoncorretto:21
+# Etapa final (runtime)
+FROM eclipse-temurin:21-jre
 
-COPY --from=builder target/pontodoc-0.0.1-SNAPSHOT.jar application.jar
+WORKDIR /app
+COPY --from=builder /app/target/pontodoc-0.0.1-SNAPSHOT.jar app.jar
 
-ENTRYPOINT ["java", "-Xmx2048M", "-jar", "/application.jar"]
+ENTRYPOINT ["java", "-Xmx2048M", "-jar", "/app/app.jar"]

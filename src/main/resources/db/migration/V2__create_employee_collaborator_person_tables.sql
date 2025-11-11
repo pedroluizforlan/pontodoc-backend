@@ -1,4 +1,4 @@
-CREATE TABLE employee (
+CREATE TABLE employees (
     id BIGSERIAL PRIMARY KEY,               
     job_title VARCHAR(255),                              
     department VARCHAR(255),                             
@@ -9,10 +9,10 @@ CREATE TABLE employee (
     uploaded_at TIMESTAMP,                               
     deleted_at TIMESTAMP,                                
     CONSTRAINT fk_manager FOREIGN KEY (manager_id)      
-        REFERENCES employee(id) ON DELETE SET NULL      
+        REFERENCES employees(id) ON DELETE SET NULL      
 );
 
-CREATE TABLE person (
+CREATE TABLE persons (
     id BIGSERIAL PRIMARY KEY,               
     name VARCHAR(255) NOT NULL,                          
     birthday DATE NOT NULL,                         
@@ -26,7 +26,7 @@ CREATE TABLE person (
     deleted_at TIMESTAMP                                  
 );
 
-CREATE TABLE collaborator (
+CREATE TABLE collaborators (
     id BIGSERIAL PRIMARY KEY,               
     employee_id BIGINT,                                  
     user_id BIGINT,                                     
@@ -35,9 +35,9 @@ CREATE TABLE collaborator (
     uploaded_at TIMESTAMP,                                
     deleted_at TIMESTAMP,                                
     CONSTRAINT fk_employee FOREIGN KEY (employee_id)    
-        REFERENCES employee(id) ON DELETE CASCADE,       
+        REFERENCES employees(id) ON DELETE CASCADE,       
     CONSTRAINT fk_user FOREIGN KEY (user_id)            
-        REFERENCES user(id) ON DELETE CASCADE,          
+        REFERENCES users(id) ON DELETE CASCADE,          
     CONSTRAINT fk_person FOREIGN KEY (person_id)        
-        REFERENCES person(id) ON DELETE CASCADE          
+        REFERENCES persons(id) ON DELETE CASCADE          
 );
