@@ -2,6 +2,7 @@ package com.pedroluizforlan.pontodoc.service.imp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import com.pedroluizforlan.pontodoc.model.Person;
 import com.pedroluizforlan.pontodoc.repository.PersonRepository;
@@ -29,15 +30,45 @@ public class PersonServiceImp implements PersonService {
     }
 
     @Override
-    public Person create(Person entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+    public Person create(Person person) {
+        person.setCreatedAt(LocalDateTime.now());
+        return personRepository.save(person);
     }
 
     @Override
-    public Person update(Long id, Person entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public Person update(Long id, Person person) {
+        Person personToUpdate = findById(id);
+
+        if(!Objects.equals(personToUpdate.getName(), person.getName())){
+            personToUpdate.setName(person.getName());
+        }
+
+        if(!Objects.equals(personToUpdate.getBirthday(), person.getBirthday())){
+            personToUpdate.setBirthday(person.getBirthday());
+        }
+
+        if(!Objects.equals(personToUpdate.getAddress(), person.getAddress())){
+            personToUpdate.setAddress(person.getAddress());
+        }
+
+        if(!Objects.equals(personToUpdate.getCellphoneNumber(), person.getCellphoneNumber())){
+            personToUpdate.setCellphoneNumber(person.getCellphoneNumber());
+        }
+
+        if(!Objects.equals(personToUpdate.getCep(), person.getCep())){
+            personToUpdate.setCep(person.getCep());
+        }
+
+        if(!Objects.equals(personToUpdate.getCpf(), person.getCpf())){
+            personToUpdate.setCpf(person.getCpf());
+        }
+
+        if(!Objects.equals(personToUpdate.getGender(), person.getGender())){
+            personToUpdate.setGender(person.getGender());
+        }
+
+        personToUpdate.setUploadedAt(LocalDateTime.now());
+        return personRepository.save(personToUpdate);
     }
 
     @Override

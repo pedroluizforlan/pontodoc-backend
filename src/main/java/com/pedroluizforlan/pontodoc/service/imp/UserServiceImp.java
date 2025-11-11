@@ -30,26 +30,26 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User create(User entity) {
-        entity.setCreatedAt(LocalDateTime.now());
-        return userRepository.save(entity);
+    public User create(User user) {
+        user.setCreatedAt(LocalDateTime.now());
+        return userRepository.save(user);
     }
 
     @Override
-    public User update(Long id, User entity) {
+    public User update(Long id, User user) {
         User existingUser = findById(id);
 
-        if (entity.getEmail() != null) {
-            existingUser.setEmail(entity.getEmail());
+        if (user.getEmail() != existingUser.getEmail()) {
+            existingUser.setEmail(user.getEmail());
         }
-        if (entity.getPassword() != null) {
-            existingUser.setPassword(entity.getPassword());
+        if (user.getPassword() != existingUser.getPassword()) {
+            existingUser.setPassword(user.getPassword());
         }
-        if (entity.getUseType() != null) {
-            existingUser.setUseType(entity.getUseType());
+        if (user.getUseType() != existingUser.getUseType()) {
+            existingUser.setUseType(user.getUseType());
         }
-        if (entity.isVerifiedEmail()) {
-            existingUser.setVerifiedEmail(entity.isVerifiedEmail());
+        if (user.isVerifiedEmail()) {
+            existingUser.setVerifiedEmail(user.isVerifiedEmail());
         }
 
         existingUser.setUploadedAt(LocalDateTime.now());
