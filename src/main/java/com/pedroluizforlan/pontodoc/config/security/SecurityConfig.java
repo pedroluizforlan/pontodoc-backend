@@ -9,10 +9,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -46,10 +49,15 @@ public class SecurityConfig {
         return NimbusJwtDecoder.withPublicKey(key).build();
     }
 
-    // @Bean
-    // JwtDecoder jwtEncoder(){
-    //     var jwk = new RSAKey.Builder(key).privateKey(privateKey).build();
-    //     var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-    //     return new NimbusJwtDecoder(jwks);
-    // }
+    @Bean
+    JwtEncoder jwtEncoder(){
+        var jwk = new RSAKey.Builder(key).privateKey(privateKey).build();
+        var jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwks);
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 }

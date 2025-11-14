@@ -33,6 +33,8 @@ public class Employee {
 
     private String department;
 
+    private String pis;
+
     @Column(name = "hiring_date")
     private LocalDate hiringDate;
 
