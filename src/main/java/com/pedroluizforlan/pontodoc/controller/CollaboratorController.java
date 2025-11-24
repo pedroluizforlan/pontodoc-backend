@@ -3,6 +3,7 @@ package com.pedroluizforlan.pontodoc.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,12 +26,14 @@ public class CollaboratorController {
         this.collaboratorService = collaboratorService;
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @GetMapping
     public ResponseEntity<List<Collaborator>> getAllCollaborator(){
         List<Collaborator> collaborators = collaboratorService.findAll();
         return ResponseEntity.ok(collaborators);
     }
     
+    @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("/{id}")
     public ResponseEntity<Collaborator> getCollaborator(@PathVariable Long id){
         Collaborator collaborator = collaboratorService.findById(id);
@@ -42,11 +45,13 @@ public class CollaboratorController {
         return ResponseEntity.ok(collaboratorService.create(collaborator));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<Collaborator> updateCollaborator(@PathVariable Long id, @RequestBody Collaborator collaborator){
         return ResponseEntity.ok(collaboratorService.update(id, collaborator));
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Collaborator> deleteCollaborator(@PathVariable Long id){
         return ResponseEntity.ok(collaboratorService.delete(id));

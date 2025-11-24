@@ -26,8 +26,7 @@ public class JwtService {
                             .stream()
                             .map(GrantedAuthority::getAuthority)
                             .collect(Collectors.joining(" "));
-    
-    
+
         var claims = JwtClaimsSet.builder()
         .issuer("pontodoc-backend")
         .issuedAt(now)
@@ -35,7 +34,7 @@ public class JwtService {
         .subject(auth.getName())
         .claim("scope",scopes)
         .build();
-    
+
         return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 }

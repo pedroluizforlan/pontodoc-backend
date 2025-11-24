@@ -3,6 +3,7 @@ package com.pedroluizforlan.pontodoc.service.imp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.pedroluizforlan.pontodoc.model.User;
@@ -13,9 +14,11 @@ import com.pedroluizforlan.pontodoc.service.UserService;
 public class UserServiceImp implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImp(UserRepository userRepository){
+    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -31,6 +34,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User create(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
         return userRepository.save(user);
     }
@@ -42,11 +46,11 @@ public class UserServiceImp implements UserService {
     public User update(Long id, User user) {
         User existingUser = findById(id);
 
-        if (user.getEmail() != existingUser.getEmail()) {
+        if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
             existingUser.setEmail(user.getEmail());
         }
-        if (user.getPassword() != existingUser.getPassword()) {
-            existingUser.setPassword(user.getPassword());
+        if (user.getPassword() != null && !user.getPassword().equals(existingUser.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         if (user.getUseType() != existingUser.getUseType()) {
             existingUser.setUseType(user.getUseType());

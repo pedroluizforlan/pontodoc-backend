@@ -1,14 +1,16 @@
 package com.pedroluizforlan.pontodoc.controller;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pedroluizforlan.pontodoc.dto.LoginRequest;
 import com.pedroluizforlan.pontodoc.service.security.AuthenticationService;
 
 @RestController
 public class AuthenticationController {
-
+    @Autowired
     private final AuthenticationService authenticationService;
 
     public AuthenticationController(AuthenticationService authenticationService){
@@ -16,7 +18,7 @@ public class AuthenticationController {
     }
     
     @PostMapping("api/auth")
-    public String authenticate(Authentication auth){
-        return authenticationService.authenticate(auth);
+    public String authenticate(@RequestBody LoginRequest loginRequest){
+        return authenticationService.authenticate(loginRequest);
     }
 }
