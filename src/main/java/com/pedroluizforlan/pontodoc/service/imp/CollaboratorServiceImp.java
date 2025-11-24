@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 import com.pedroluizforlan.pontodoc.model.Collaborator;
+import com.pedroluizforlan.pontodoc.model.EmailLog;
 import com.pedroluizforlan.pontodoc.model.Employee;
 import com.pedroluizforlan.pontodoc.model.Person;
 import com.pedroluizforlan.pontodoc.model.User;
@@ -16,6 +17,7 @@ import com.pedroluizforlan.pontodoc.service.EmployeeService;
 import com.pedroluizforlan.pontodoc.service.PersonService;
 import com.pedroluizforlan.pontodoc.service.UserService;
 
+
 @Service
 public class CollaboratorServiceImp implements CollaboratorService{
 
@@ -23,30 +25,28 @@ public class CollaboratorServiceImp implements CollaboratorService{
     private final PersonService personService;
     private final EmployeeService employeeService;
     private final UserService userService;
+    private final EmailLogServiceImp emailLogServiceImp;
 
     public CollaboratorServiceImp(
         CollaboratorRepository collaboratorRepository,
         PersonService personService,
         EmployeeService employeeService,
-        UserService userService
+        UserService userService,
+        EmailLogServiceImp emailLogServiceImp
         ){
         this.collaboratorRepository = collaboratorRepository;
         this.personService = personService;
         this.employeeService = employeeService;
         this.userService = userService;
+        this.emailLogServiceImp = emailLogServiceImp;
     }
-    /*
-     * @TODO Entender motivo de não estar listando
-     */
+
     @Override
     public List<Collaborator> findAll() {
         var collaborators = collaboratorRepository.findAll();
         return collaborators;
     }
 
-     /*
-     * @TODO Entender motivo de não estar listando
-     */
     @Override
     public Collaborator findById(Long id) {
         return collaboratorRepository
@@ -65,6 +65,10 @@ public class CollaboratorServiceImp implements CollaboratorService{
         collaborator.setUser(cUser);
 
         collaborator.setCreatedAt(LocalDateTime.now());
+
+        var email = this.createEmailLog(collaborator);
+        emailLogServiceImp.sendEmail(email);
+        
         return collaboratorRepository.save(collaborator);
     }
 
@@ -91,9 +95,7 @@ public class CollaboratorServiceImp implements CollaboratorService{
         return collaboratorRepository.save(collaboratorToUpdate);
     }
 
-    /*
-    * @TODO Avaliar pq não está apagando
-    */
+
     @Override
     public Collaborator delete(Long id) {
         Collaborator collaborator = findById(id);
@@ -105,6 +107,21 @@ public class CollaboratorServiceImp implements CollaboratorService{
 
 
         return collaboratorRepository.save(collaborator);
+    }
+
+
+    private EmailLog createEmailLog(Collaborator collaborator){
+        EmailLog emailLog = new EmailLog();
+
+        emailLog.setCollaborator(collaborator);
+        emailLog.setEmailType("NEW USER");
+        emailLog.setEmailSubject("Bem-vindo ao sistema PontoDoc");
+        emailLog.setEmailBody("<h1>Seja bem vindo ao Sistema PontoDoc </h1>\n"
+        + "Seu usuário: " +collaborator.getUser().getEmail() + 
+        "\nSua senha: " +collaborator.getUser().getPassword()
+        );
+
+        return emailLog;
     }
     
 }

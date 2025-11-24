@@ -39,9 +39,6 @@ public class UserServiceImp implements UserService {
         return userRepository.save(user);
     }
 
-    /*
-     * @TODO Atualizar método de update de usuário. Validar quando o dado for == null.
-     */
     @Override
     public User update(Long id, User user) {
         User existingUser = findById(id);
