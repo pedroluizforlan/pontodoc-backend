@@ -7,38 +7,49 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 import com.pedroluizforlan.pontodoc.model.Collaborator;
+import com.pedroluizforlan.pontodoc.model.DriveIntegration;
 import com.pedroluizforlan.pontodoc.model.EmailLog;
 import com.pedroluizforlan.pontodoc.model.Employee;
 import com.pedroluizforlan.pontodoc.model.Person;
 import com.pedroluizforlan.pontodoc.model.User;
 import com.pedroluizforlan.pontodoc.repository.CollaboratorRepository;
 import com.pedroluizforlan.pontodoc.service.CollaboratorService;
+import com.pedroluizforlan.pontodoc.service.DriveIntegrationService;
 import com.pedroluizforlan.pontodoc.service.EmployeeService;
 import com.pedroluizforlan.pontodoc.service.PersonService;
 import com.pedroluizforlan.pontodoc.service.UserService;
+import com.pedroluizforlan.pontodoc.service.integrations.GoogleDriveService;
 
 
 @Service
 public class CollaboratorServiceImp implements CollaboratorService{
+
+    
 
     private final CollaboratorRepository collaboratorRepository;
     private final PersonService personService;
     private final EmployeeService employeeService;
     private final UserService userService;
     private final EmailLogServiceImp emailLogServiceImp;
+    private final DriveIntegrationService driveIntegrationService;
+    private final GoogleDriveService googleDriveService;
 
     public CollaboratorServiceImp(
         CollaboratorRepository collaboratorRepository,
         PersonService personService,
         EmployeeService employeeService,
         UserService userService,
-        EmailLogServiceImp emailLogServiceImp
+        EmailLogServiceImp emailLogServiceImp,
+        DriveIntegrationService driveIntegrationService,
+        GoogleDriveService googleDriveService
         ){
         this.collaboratorRepository = collaboratorRepository;
         this.personService = personService;
         this.employeeService = employeeService;
         this.userService = userService;
         this.emailLogServiceImp = emailLogServiceImp;
+        this.driveIntegrationService = driveIntegrationService;
+        this.googleDriveService = googleDriveService;
     }
 
     @Override
@@ -65,11 +76,19 @@ public class CollaboratorServiceImp implements CollaboratorService{
         collaborator.setUser(cUser);
 
         collaborator.setCreatedAt(LocalDateTime.now());
+        
+        var newCollaborator = collaboratorRepository.save(collaborator);
 
         var email = this.createEmailLog(collaborator);
+
+
+        var folderId = googleDriveService.createFolderForCollaborator(collaborator.getPerson().getName());
+        var driveIntegration = this.createFolder(folderId, newCollaborator);
+
+        driveIntegrationService.create(driveIntegration);
         emailLogServiceImp.sendEmail(email);
-        
-        return collaboratorRepository.save(collaborator);
+
+        return newCollaborator;
     }
 
     @Override
@@ -122,6 +141,14 @@ public class CollaboratorServiceImp implements CollaboratorService{
         );
 
         return emailLog;
+    }
+
+    private DriveIntegration createFolder(String folderId, Collaborator collaborator){
+        DriveIntegration driveIntegration = new DriveIntegration();
+        driveIntegration.setCollaborator(collaborator);
+        driveIntegration.setFolderId(folderId);
+
+        return driveIntegration;
     }
     
 }
