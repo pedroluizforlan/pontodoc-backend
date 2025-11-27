@@ -27,6 +27,6 @@ public class DriveIntegration {
     @JoinColumn(name = "collaborator_id")
     private Collaborator collaborator;
 
-    @Column(name="email_type")
-    private String emailType;
+    @Column(name="folder_id")
+    private String folderId;
 }
