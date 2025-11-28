@@ -55,7 +55,11 @@ public class CollaboratorServiceImp implements CollaboratorService{
     @Override
     public List<Collaborator> findAll() {
         var collaborators = collaboratorRepository.findAll();
-        return collaborators;
+        var collaboratorsReturn = collaborators
+                                    .stream()
+                                    .filter(collaborator -> !collaborator.getUser().getUseType().equals("MANAGER"))
+                                    .toList();                        
+        return collaboratorsReturn;
     }
 
     @Override

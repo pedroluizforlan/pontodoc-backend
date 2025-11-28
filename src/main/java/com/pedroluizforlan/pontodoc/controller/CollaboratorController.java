@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pedroluizforlan.pontodoc.model.Collaborator;
+import com.pedroluizforlan.pontodoc.model.dto.CollaboratorDTO;
+import com.pedroluizforlan.pontodoc.model.mapper.CollaboratorMapper;
 import com.pedroluizforlan.pontodoc.service.CollaboratorService;
 
 @RestController
@@ -21,23 +23,27 @@ import com.pedroluizforlan.pontodoc.service.CollaboratorService;
 public class CollaboratorController {
     
     private final CollaboratorService collaboratorService;
+    private final CollaboratorMapper mapper;
 
-    public CollaboratorController(CollaboratorService collaboratorService){
+    public CollaboratorController(CollaboratorService collaboratorService, CollaboratorMapper mapper){
         this.collaboratorService = collaboratorService;
+        this.mapper = mapper;
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping
-    public ResponseEntity<List<Collaborator>> getAllCollaborator(){
+    public ResponseEntity<List<CollaboratorDTO>> getAllCollaborator(){
         List<Collaborator> collaborators = collaboratorService.findAll();
-        return ResponseEntity.ok(collaborators);
+        List<CollaboratorDTO> collaboratorDTOs = collaborators.stream().map(mapper::toDTO).toList();
+        return ResponseEntity.ok(collaboratorDTOs);
     }
     
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("/{id}")
-    public ResponseEntity<Collaborator> getCollaborator(@PathVariable Long id){
+    public ResponseEntity<CollaboratorDTO> getCollaborator(@PathVariable Long id){
         Collaborator collaborator = collaboratorService.findById(id);
-        return ResponseEntity.ok(collaborator);
+        CollaboratorDTO collaboratorDTO = mapper.toDTO(collaborator);
+        return ResponseEntity.ok(collaboratorDTO);
     }
 
     @PostMapping

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pedroluizforlan.pontodoc.dto.AuthResponse;
 import com.pedroluizforlan.pontodoc.dto.LoginRequest;
 import com.pedroluizforlan.pontodoc.service.security.AuthenticationService;
 
@@ -19,7 +20,8 @@ public class AuthenticationController {
     
     
     @PostMapping("api/auth")
-    public String authenticate(@RequestBody LoginRequest loginRequest){
-        return authenticationService.authenticate(loginRequest);
+    public AuthResponse authenticate(@RequestBody LoginRequest loginRequest){
+        String token = authenticationService.authenticate(loginRequest);
+        return new AuthResponse(token);
     }
 }
