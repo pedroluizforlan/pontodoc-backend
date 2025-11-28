@@ -43,6 +43,6 @@ public class Collaborator {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "deleated_at")
-    private LocalDateTime deleatedAt;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 }

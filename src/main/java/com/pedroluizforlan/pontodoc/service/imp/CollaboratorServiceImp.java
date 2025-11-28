@@ -12,6 +12,8 @@ import com.pedroluizforlan.pontodoc.model.EmailLog;
 import com.pedroluizforlan.pontodoc.model.Employee;
 import com.pedroluizforlan.pontodoc.model.Person;
 import com.pedroluizforlan.pontodoc.model.User;
+import com.pedroluizforlan.pontodoc.model.dto.CollaboratorDTO;
+import com.pedroluizforlan.pontodoc.model.mapper.CollaboratorMapper;
 import com.pedroluizforlan.pontodoc.repository.CollaboratorRepository;
 import com.pedroluizforlan.pontodoc.service.CollaboratorService;
 import com.pedroluizforlan.pontodoc.service.DriveIntegrationService;
@@ -24,8 +26,6 @@ import com.pedroluizforlan.pontodoc.service.integrations.GoogleDriveService;
 @Service
 public class CollaboratorServiceImp implements CollaboratorService{
 
-    
-
     private final CollaboratorRepository collaboratorRepository;
     private final PersonService personService;
     private final EmployeeService employeeService;
@@ -33,6 +33,7 @@ public class CollaboratorServiceImp implements CollaboratorService{
     private final EmailLogServiceImp emailLogServiceImp;
     private final DriveIntegrationService driveIntegrationService;
     private final GoogleDriveService googleDriveService;
+    private final CollaboratorMapper mapper;
 
     public CollaboratorServiceImp(
         CollaboratorRepository collaboratorRepository,
@@ -41,7 +42,8 @@ public class CollaboratorServiceImp implements CollaboratorService{
         UserService userService,
         EmailLogServiceImp emailLogServiceImp,
         DriveIntegrationService driveIntegrationService,
-        GoogleDriveService googleDriveService
+        GoogleDriveService googleDriveService,
+        CollaboratorMapper mapper
         ){
         this.collaboratorRepository = collaboratorRepository;
         this.personService = personService;
@@ -50,27 +52,30 @@ public class CollaboratorServiceImp implements CollaboratorService{
         this.emailLogServiceImp = emailLogServiceImp;
         this.driveIntegrationService = driveIntegrationService;
         this.googleDriveService = googleDriveService;
+        this.mapper = mapper;
     }
 
     @Override
-    public List<Collaborator> findAll() {
+    public List<CollaboratorDTO> findAll() {
         var collaborators = collaboratorRepository.findAll();
         var collaboratorsReturn = collaborators
                                     .stream()
                                     .filter(collaborator -> !collaborator.getUser().getUseType().equals("MANAGER"))
-                                    .toList();                        
+                                    .map(mapper::toDTO)
+                                    .toList();
         return collaboratorsReturn;
     }
 
     @Override
-    public Collaborator findById(Long id) {
-        return collaboratorRepository
+    public CollaboratorDTO findById(Long id) {
+        Collaborator collaborator = collaboratorRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Collaborator not found with id: " + id));
+        return mapper.toDTO(collaborator);
     }
 
     @Override
-    public Collaborator create(Collaborator collaborator) {
+    public CollaboratorDTO create(Collaborator collaborator) {
         Person cPerson = personService.create(collaborator.getPerson());
         Employee cEmployee = employeeService.create(collaborator.getEmployee());
         User cUser = userService.create(collaborator.getUser());
@@ -92,13 +97,16 @@ public class CollaboratorServiceImp implements CollaboratorService{
         driveIntegrationService.create(driveIntegration);
         emailLogServiceImp.sendEmail(email);
 
-        return newCollaborator;
+        var collaboratorDTO = mapper.toDTO(newCollaborator);
+        return collaboratorDTO;
     }
 
     @Override
-    public Collaborator update(Long id, Collaborator collaborator) {
-        Collaborator collaboratorToUpdate = findById(id);
-
+    public CollaboratorDTO update(Long id, Collaborator collaborator) {
+        Collaborator collaboratorToUpdate = collaboratorRepository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException("Collaborator not found with id: " + id));
+            
         if(!Objects.equals(collaborator.getEmployee(), collaboratorToUpdate.getEmployee())){
             Employee employeeUpdated = employeeService.update(collaboratorToUpdate.getEmployee().getId(), collaborator.getEmployee());
             collaboratorToUpdate.setEmployee(employeeUpdated);
@@ -115,21 +123,24 @@ public class CollaboratorServiceImp implements CollaboratorService{
         }
 
         collaboratorToUpdate.setUpdatedAt(LocalDateTime.now());
-        return collaboratorRepository.save(collaboratorToUpdate);
+        Collaborator updatedCollaborator = collaboratorRepository.save(collaboratorToUpdate);
+        return mapper.toDTO(updatedCollaborator);
     }
 
 
     @Override
-    public Collaborator delete(Long id) {
-        Collaborator collaborator = findById(id);
-        collaborator.setDeleatedAt(LocalDateTime.now());
+    public CollaboratorDTO delete(Long id) {
+        Collaborator collaborator = collaboratorRepository
+            .findById(id)
+            .orElseThrow(() -> new RuntimeException("Collaborator not found with id: " + id));
+        collaborator.setDeletedAt(LocalDateTime.now());
 
         personService.delete(collaborator.getPerson().getId());
         userService.delete(collaborator.getUser().getId());
         employeeService.delete(collaborator.getEmployee().getId());
 
-
-        return collaboratorRepository.save(collaborator);
+        Collaborator deletedCollaborator = collaboratorRepository.save(collaborator);
+        return mapper.toDTO(deletedCollaborator);
     }
 
 
