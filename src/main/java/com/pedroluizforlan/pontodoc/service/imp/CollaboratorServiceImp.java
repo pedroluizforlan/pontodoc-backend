@@ -60,7 +60,7 @@ public class CollaboratorServiceImp implements CollaboratorService{
         var collaborators = collaboratorRepository.findAll();
         var collaboratorsReturn = collaborators
                                     .stream()
-                                    .filter(collaborator -> !collaborator.getUser().getUseType().equals("MANAGER"))
+                                    .filter(c -> c.getUser().getUseType() != User.UserType.MANAGER && c.getUser().getDeletedAt() == null)
                                     .map(mapper::toDTO)
                                     .toList();
         return collaboratorsReturn;
@@ -78,8 +78,9 @@ public class CollaboratorServiceImp implements CollaboratorService{
     public CollaboratorDTO create(Collaborator collaborator) {
         Person cPerson = personService.create(collaborator.getPerson());
         Employee cEmployee = employeeService.create(collaborator.getEmployee());
+        var password = collaborator.getUser().getPassword();
         User cUser = userService.create(collaborator.getUser());
-
+        
         collaborator.setPerson(cPerson);
         collaborator.setEmployee(cEmployee);
         collaborator.setUser(cUser);
@@ -88,7 +89,7 @@ public class CollaboratorServiceImp implements CollaboratorService{
         
         var newCollaborator = collaboratorRepository.save(collaborator);
 
-        var email = this.createEmailLog(collaborator);
+        var email = this.createEmailLog(collaborator, password);
 
 
         var folderId = googleDriveService.createFolderForCollaborator(collaborator.getPerson().getName());
@@ -144,15 +145,15 @@ public class CollaboratorServiceImp implements CollaboratorService{
     }
 
 
-    private EmailLog createEmailLog(Collaborator collaborator){
+    private EmailLog createEmailLog(Collaborator collaborator, String password){
         EmailLog emailLog = new EmailLog();
 
         emailLog.setCollaborator(collaborator);
         emailLog.setEmailType("NEW USER");
         emailLog.setEmailSubject("Bem-vindo ao sistema PontoDoc");
-        emailLog.setEmailBody("<h1>Seja bem vindo ao Sistema PontoDoc </h1>\n"
+        emailLog.setEmailBody("Seja bem vindo ao Sistema PontoDoc\n"
         + "Seu usuário: " +collaborator.getUser().getEmail() + 
-        "\nSua senha: " +collaborator.getUser().getPassword()
+        "\nSua senha: " + password
         );
 
         return emailLog;

@@ -4,7 +4,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     use_type VARCHAR(50) NOT NULL CHECK (use_type IN ('MANAGER', 'ASSESSOR', 'EMPLOYEE')),
     email_verified BOOLEAN, 
-    created_date TIMESTAMP,
-    uploaded_date TIMESTAMP,
-    deleated_date TIMESTAMP
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP
 );

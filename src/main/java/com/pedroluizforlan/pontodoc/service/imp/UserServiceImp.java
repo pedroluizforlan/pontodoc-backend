@@ -63,7 +63,7 @@ public class UserServiceImp implements UserService {
     @Override
     public User delete(Long id) {
         User user = findById(id);
-        user.setDeleatedAt(LocalDateTime.now());
+        user.setDeletedAt(LocalDateTime.now());
         return userRepository.save(user);
     }
 

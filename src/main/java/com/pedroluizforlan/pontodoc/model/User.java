@@ -39,8 +39,8 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "deleated_at")
-    private LocalDateTime deleatedAt;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     @Column(name="email_verified")
     private boolean verifiedEmail;
