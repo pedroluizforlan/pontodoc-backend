@@ -1,17 +1,3 @@
-CREATE TABLE employees (
-    id BIGSERIAL PRIMARY KEY,               
-    job_title VARCHAR(255),                              
-    department VARCHAR(255),                             
-    hiring_date DATE,                               
-    manager_id BIGINT,                                  
-    leadership BOOLEAN,                                  
-    created_at TIMESTAMP,                                
-    updeted_at TIMESTAMP,                               
-    deleted_at TIMESTAMP,                                
-    CONSTRAINT fk_manager FOREIGN KEY (manager_id)      
-        REFERENCES employees(id) ON DELETE SET NULL      
-);
-
 CREATE TABLE persons (
     id BIGSERIAL PRIMARY KEY,               
     name VARCHAR(255) NOT NULL,                          
@@ -20,10 +6,22 @@ CREATE TABLE persons (
     address VARCHAR(255),                                
     cep VARCHAR(8) NOT NULL,                            
     gender VARCHAR(10),                                  
-    cellphone_number VARCHAR(11) NOT NULL UNIQUE,        
-    created_at TIMESTAMP,                                 
-    updated_at TIMESTAMP,                                
-    deleted_at TIMESTAMP                                  
+    cellphone_number VARCHAR(11) NOT NULL UNIQUE,      
+
+
+    job_title VARCHAR(255),
+    department VARCHAR(255),
+    hiring_date DATE,
+    manager_id BIGINT,
+    leadership BOOLEAN,
+
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    deleted_at TIMESTAMP,
+
+
+    CONSTRAINT fk_person_manager FOREIGN KEY (manager_id)
+        REFERENCES persons(id) ON DELETE SET NULL                                 
 );
 
 CREATE TABLE collaborators (
@@ -34,8 +32,6 @@ CREATE TABLE collaborators (
     created_at TIMESTAMP,                                
     updated_at TIMESTAMP,                                
     deleted_at TIMESTAMP,                                
-    CONSTRAINT fk_employee FOREIGN KEY (employee_id)    
-        REFERENCES employees(id) ON DELETE CASCADE,       
     CONSTRAINT fk_user FOREIGN KEY (user_id)            
         REFERENCES users(id) ON DELETE CASCADE,          
     CONSTRAINT fk_person FOREIGN KEY (person_id)        

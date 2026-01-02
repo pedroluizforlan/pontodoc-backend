@@ -10,5 +10,11 @@ public record PersonDTO(
     String gender,
     String number,
     String address,
-    String cep
+    String cep,
+    String jobTitle,
+    String department,
+    String pis,
+    LocalDate hiringDate,
+    Long managerId,            
+    boolean leadership
 ) {}

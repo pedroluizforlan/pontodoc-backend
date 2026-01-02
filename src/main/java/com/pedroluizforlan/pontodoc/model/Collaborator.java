@@ -24,10 +24,6 @@ public class Collaborator {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
 
     @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "user_id")

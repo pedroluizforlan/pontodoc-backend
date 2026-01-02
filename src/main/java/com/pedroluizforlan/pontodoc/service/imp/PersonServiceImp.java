@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.pedroluizforlan.pontodoc.model.Person;
 import com.pedroluizforlan.pontodoc.repository.PersonRepository;
 import com.pedroluizforlan.pontodoc.service.PersonService;
+import com.pedroluizforlan.pontodoc.service.exceptions.BusinessException;
 
 @Service
 public class PersonServiceImp implements PersonService {
@@ -68,6 +69,26 @@ public class PersonServiceImp implements PersonService {
 
         if(!Objects.equals(personToUpdate.getGender(), person.getGender())){
             personToUpdate.setGender(person.getGender());
+        }
+
+        if (!Objects.equals(person.getJobTitle(), personToUpdate.getJobTitle())) {
+            personToUpdate.setJobTitle(person.getJobTitle());
+        }
+
+        if (!Objects.equals(person.getHiringDate(), personToUpdate.getHiringDate())) {
+            personToUpdate.setHiringDate(person.getHiringDate());
+        }
+
+        if (!Objects.equals(person.getManagerId(), personToUpdate.getManagerId())) {
+            if(person.getManagerId().isLeadership()){
+                throw new BusinessException("The "+ person.getManagerId().getId()+" isn't a leadership employee");
+            }
+
+            personToUpdate.setManagerId(person.getManagerId());
+        }
+
+        if (!Objects.equals(person.getDepartment(), personToUpdate.getDepartment())) {
+            personToUpdate.setDepartment(person.getDepartment());
         }
 
         personToUpdate.setUpdatedAt(LocalDateTime.now());

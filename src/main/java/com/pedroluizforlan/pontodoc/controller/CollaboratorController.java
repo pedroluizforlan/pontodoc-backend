@@ -41,7 +41,7 @@ public class CollaboratorController {
         return ResponseEntity.ok(collaboratorDTO);
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
+    
     @PostMapping
     public ResponseEntity<CollaboratorDTO> createCollaborator(@RequestBody Collaborator collaborator){
         return ResponseEntity.ok(collaboratorService.create(collaborator));

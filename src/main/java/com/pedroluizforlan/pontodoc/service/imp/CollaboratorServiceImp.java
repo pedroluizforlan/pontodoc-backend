@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.pedroluizforlan.pontodoc.model.Collaborator;
 import com.pedroluizforlan.pontodoc.model.DriveIntegration;
 import com.pedroluizforlan.pontodoc.model.EmailLog;
-import com.pedroluizforlan.pontodoc.model.Employee;
 import com.pedroluizforlan.pontodoc.model.Person;
 import com.pedroluizforlan.pontodoc.model.User;
 import com.pedroluizforlan.pontodoc.model.dto.CollaboratorDTO;
@@ -17,7 +16,6 @@ import com.pedroluizforlan.pontodoc.model.mapper.CollaboratorMapper;
 import com.pedroluizforlan.pontodoc.repository.CollaboratorRepository;
 import com.pedroluizforlan.pontodoc.service.CollaboratorService;
 import com.pedroluizforlan.pontodoc.service.DriveIntegrationService;
-import com.pedroluizforlan.pontodoc.service.EmployeeService;
 import com.pedroluizforlan.pontodoc.service.PersonService;
 import com.pedroluizforlan.pontodoc.service.UserService;
 import com.pedroluizforlan.pontodoc.service.integrations.GoogleDriveService;
@@ -28,7 +26,6 @@ public class CollaboratorServiceImp implements CollaboratorService{
 
     private final CollaboratorRepository collaboratorRepository;
     private final PersonService personService;
-    private final EmployeeService employeeService;
     private final UserService userService;
     private final EmailLogServiceImp emailLogServiceImp;
     private final DriveIntegrationService driveIntegrationService;
@@ -38,7 +35,6 @@ public class CollaboratorServiceImp implements CollaboratorService{
     public CollaboratorServiceImp(
         CollaboratorRepository collaboratorRepository,
         PersonService personService,
-        EmployeeService employeeService,
         UserService userService,
         EmailLogServiceImp emailLogServiceImp,
         DriveIntegrationService driveIntegrationService,
@@ -47,7 +43,6 @@ public class CollaboratorServiceImp implements CollaboratorService{
         ){
         this.collaboratorRepository = collaboratorRepository;
         this.personService = personService;
-        this.employeeService = employeeService;
         this.userService = userService;
         this.emailLogServiceImp = emailLogServiceImp;
         this.driveIntegrationService = driveIntegrationService;
@@ -77,12 +72,11 @@ public class CollaboratorServiceImp implements CollaboratorService{
     @Override
     public CollaboratorDTO create(Collaborator collaborator) {
         Person cPerson = personService.create(collaborator.getPerson());
-        Employee cEmployee = employeeService.create(collaborator.getEmployee());
+        
         var password = collaborator.getUser().getPassword();
         User cUser = userService.create(collaborator.getUser());
         
         collaborator.setPerson(cPerson);
-        collaborator.setEmployee(cEmployee);
         collaborator.setUser(cUser);
 
         collaborator.setCreatedAt(LocalDateTime.now());
@@ -107,11 +101,6 @@ public class CollaboratorServiceImp implements CollaboratorService{
         Collaborator collaboratorToUpdate = collaboratorRepository
             .findById(id)
             .orElseThrow(() -> new RuntimeException("Collaborator not found with id: " + id));
-            
-        if(!Objects.equals(collaborator.getEmployee(), collaboratorToUpdate.getEmployee())){
-            Employee employeeUpdated = employeeService.update(collaboratorToUpdate.getEmployee().getId(), collaborator.getEmployee());
-            collaboratorToUpdate.setEmployee(employeeUpdated);
-        }
 
         if(!Objects.equals(collaborator.getPerson(), collaboratorToUpdate.getPerson())){
             Person personUpdated = personService.update(collaboratorToUpdate.getPerson().getId(), collaborator.getPerson());
@@ -138,7 +127,6 @@ public class CollaboratorServiceImp implements CollaboratorService{
 
         personService.delete(collaborator.getPerson().getId());
         userService.delete(collaborator.getUser().getId());
-        employeeService.delete(collaborator.getEmployee().getId());
 
         Collaborator deletedCollaborator = collaboratorRepository.save(collaborator);
         return mapper.toDTO(deletedCollaborator);

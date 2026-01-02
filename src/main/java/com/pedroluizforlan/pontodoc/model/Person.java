@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.Getter;
@@ -43,6 +46,23 @@ public class Person {
 
     @Column(name="cellphone_number",nullable=false, unique=true, length=11)
     private String number;
+
+    @Column(name="job_title")
+    private String jobTitle;
+
+    private String department;
+
+    private String pis;
+
+    @Column(name = "hiring_date")
+    private LocalDate hiringDate;
+
+    @ManyToOne(fetch = FetchType.LAZY) 
+    @JoinColumn(name = "manager_id", nullable = true)
+    private Person managerId;
+
+    //alterar o diagrama entidade relacionamento
+    private boolean leadership;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
