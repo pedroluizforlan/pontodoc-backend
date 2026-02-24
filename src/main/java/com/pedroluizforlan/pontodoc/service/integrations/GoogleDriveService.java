@@ -23,15 +23,11 @@ public class GoogleDriveService {
 
     public String createFolderForCollaborator(String collaboratorName) {
         try {
-            
             Drive drive = googleDriveConfig.getDriveService();
 
-            
             File metadata = new File();
             metadata.setName(collaboratorName);
             metadata.setMimeType("application/vnd.google-apps.folder");
-            metadata.setParents(Collections.singletonList(rootFolderId));
-
             
             File folder = drive.files().create(metadata)
                     .setFields("id")  

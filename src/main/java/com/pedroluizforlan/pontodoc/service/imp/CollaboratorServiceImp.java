@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pedroluizforlan.pontodoc.model.Collaborator;
 import com.pedroluizforlan.pontodoc.model.DriveIntegration;
@@ -70,6 +71,7 @@ public class CollaboratorServiceImp implements CollaboratorService{
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public CollaboratorDTO create(Collaborator collaborator) {
         Person cPerson = personService.create(collaborator.getPerson());
         

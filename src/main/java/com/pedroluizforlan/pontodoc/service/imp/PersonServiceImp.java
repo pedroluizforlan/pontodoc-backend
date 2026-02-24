@@ -35,6 +35,10 @@ public class PersonServiceImp implements PersonService {
 
     @Override
     public Person create(Person person) {
+
+        if(!person.getManagerId().isLeadership()){
+            throw new BusinessException("The "+ person.getManagerId().getId()+" isn't a leadership employee");
+        } 
         person.setCreatedAt(LocalDateTime.now());
         return personRepository.save(person);
     }
