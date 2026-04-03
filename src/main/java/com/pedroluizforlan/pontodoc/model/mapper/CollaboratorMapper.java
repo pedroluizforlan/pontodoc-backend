@@ -16,6 +16,7 @@ public class CollaboratorMapper {
 
         Person p = c.getPerson();
         User u = c.getUser();
+        Long registerCode = c.getRegisterCode();
 
         PersonDTO personDTO = new PersonDTO(
                 p.getId(),
@@ -43,7 +44,7 @@ public class CollaboratorMapper {
         return new CollaboratorDTO(
                 c.getId(),
                 personDTO,
-                userDTO
+                userDTO, registerCode
         );
     }
 }

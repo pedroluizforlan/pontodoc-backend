@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 
-import java.util.Collections;
 import com.pedroluizforlan.pontodoc.config.GoogleDriveConfig;
 
 import lombok.RequiredArgsConstructor;

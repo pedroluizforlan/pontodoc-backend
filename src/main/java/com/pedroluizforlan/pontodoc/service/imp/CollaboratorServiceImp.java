@@ -73,6 +73,7 @@ public class CollaboratorServiceImp implements CollaboratorService{
     @Override
     @Transactional(rollbackFor = Exception.class)
     public CollaboratorDTO create(Collaborator collaborator) {
+        
         Person cPerson = personService.create(collaborator.getPerson());
         
         var password = collaborator.getUser().getPassword();
@@ -87,12 +88,11 @@ public class CollaboratorServiceImp implements CollaboratorService{
 
         var email = this.createEmailLog(collaborator, password);
 
-
         var folderId = googleDriveService.createFolderForCollaborator(collaborator.getPerson().getName());
         var driveIntegration = this.createFolder(folderId, newCollaborator);
 
         driveIntegrationService.create(driveIntegration);
-        emailLogServiceImp.sendEmail(email);
+        // emailLogServiceImp.sendEmail(email);
 
         var collaboratorDTO = mapper.toDTO(newCollaborator);
         return collaboratorDTO;
@@ -155,6 +155,10 @@ public class CollaboratorServiceImp implements CollaboratorService{
         driveIntegration.setFolderId(folderId);
 
         return driveIntegration;
+    }
+
+    public List<String> getAllNamesOfActivesCollaborators(){
+        return this.collaboratorRepository.gellAllNames();
     }
     
 }

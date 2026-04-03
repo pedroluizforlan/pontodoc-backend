@@ -3,6 +3,9 @@ package com.pedroluizforlan.pontodoc.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -61,12 +64,13 @@ public class Person {
     @JoinColumn(name = "manager_id", nullable = true)
     private Person managerId;
 
-    //alterar o diagrama entidade relacionamento
     private boolean leadership;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

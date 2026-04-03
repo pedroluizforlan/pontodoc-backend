@@ -3,6 +3,7 @@ package com.pedroluizforlan.pontodoc.model.dto;
 public record CollaboratorDTO(
     Long id,
     PersonDTO person,
-    UserDTO user
+    UserDTO user,
+    Long registerCode
 ) {}
 

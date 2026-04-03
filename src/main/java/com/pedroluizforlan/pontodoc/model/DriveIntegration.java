@@ -29,4 +29,6 @@ public class DriveIntegration {
 
     @Column(name="folder_id")
     private String folderId;
+
+    
 }

@@ -74,8 +74,8 @@ public class UserServiceTest {
         verify(userRepository).save(user);
     }
 
-    @Test
-    void shouldThrowBusinessExceptionIfManagerIsNotLidership(){
-        User user = new User();
-    }
+    // @Test
+    // void shouldThrowBusinessExceptionIfManagerIsNotLidership(){
+    //     User user = new User();
+    // }
 }

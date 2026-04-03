@@ -5,45 +5,38 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "collaborators")
+@Table(name = "documents_batch")
 @Data
 @Getter
 @Setter
-public class Collaborator {
+public class DocumentsBatch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(nullable = false)
+    private String name;
 
-    @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "person_id")
-    private Person person;
+    @Column(unique = false, nullable = false, name="original_hash")
+    private String originalHash;
 
-    @JsonAlias({"register_code","registerCode"})
-    @Column(name="register_code",unique = true, nullable = true)
-    private Long registerCode;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
-    private Boolean isActive;
-  
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -54,4 +47,8 @@ public class Collaborator {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+    
+    public enum Status {
+        RECIVED,PROCESSING,ERROR,FINISHED
+    } 
 }
