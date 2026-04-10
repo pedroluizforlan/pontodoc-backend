@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -23,7 +22,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Entity
 @Table(name = "document_hr")
 @Getter
@@ -40,7 +41,7 @@ public class DocumentHR {
     private DocumentsBatch document_batch;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "collaborator_id", nullable = false)
+    @JoinColumn(name = "collaborator_id", nullable = true)
     private Collaborator collaborator;
 
     @Enumerated(EnumType.STRING)
@@ -57,9 +58,9 @@ public class DocumentHR {
     @Column(nullable = false)
     private Status status;
 
-    @Lob
+
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "extracted_text")
+    @Column(name = "extracted_text", columnDefinition = "TEXT")
     private String extractedText;
 
     @CreationTimestamp
@@ -70,16 +71,26 @@ public class DocumentHR {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Column(name = "attribution")
+    private Attribution attribution;
+
+    @Column(name = "drive_url")
+    private String driveUrl;
+
     public enum DocumentType {
-        OTHER
+        TIME_CARD,FOOD_RECEIPT,TRANSPORT_RECEIPT,PAY_STUB,OTHER
     }
 
     public enum Status {
         WAITING,VALIDATED,ERROR
     }
+
+    public enum Attribution {
+        SUCCESS, ERROR, ANALYSIS 
+    }
+
 
 }

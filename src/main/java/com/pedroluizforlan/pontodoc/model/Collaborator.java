@@ -19,7 +19,9 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @Entity
 @Table(name = "collaborators")
 @Data

@@ -1,30 +1,15 @@
 package com.pedroluizforlan.pontodoc.model;
 
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@ToString
-@Entity
-@Table(name = "documents_batch")
-@Data
-@Getter
-@Setter
-public class DocumentsBatch {
+import java.time.LocalDateTime;
+
+public class DocumentSinged {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,11 +21,10 @@ public class DocumentsBatch {
     private String originalHash;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    @Column(nullable = false)
     private String path;
+
+    @Column(name = "drive_url")
+    private String driveUrl;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -52,8 +36,4 @@ public class DocumentsBatch {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
-    
-    public enum Status {
-        RECIVED,PROCESSING,ERROR,FINISHED
-    } 
 }

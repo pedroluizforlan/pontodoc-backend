@@ -13,10 +13,9 @@ import com.pedroluizforlan.pontodoc.model.Collaborator;
 public interface CollaboratorRepository extends JpaRepository<Collaborator, Long>{
 
     @Query(value = """
-        SELECT p.name 
-        FROM collaborators c
-        JOIN persons p ON p.id = c.person_id
-        WHERE c.is_active <> false
-    """, nativeQuery = true)
-    List<String> gellAllNames();
+        SELECT c
+        FROM Collaborator c
+        WHERE c.isActive <> false
+    """)
+    List<Collaborator> gellAllNames();
 }

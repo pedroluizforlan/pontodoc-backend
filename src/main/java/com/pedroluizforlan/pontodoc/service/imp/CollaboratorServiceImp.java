@@ -157,7 +157,7 @@ public class CollaboratorServiceImp implements CollaboratorService{
         return driveIntegration;
     }
 
-    public List<String> getAllNamesOfActivesCollaborators(){
+    public List<Collaborator> getAllNamesOfActivesCollaborators(){
         return this.collaboratorRepository.gellAllNames();
     }
     

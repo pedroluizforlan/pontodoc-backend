@@ -6,4 +6,3 @@ public record CollaboratorDTO(
     UserDTO user,
     Long registerCode
 ) {}
-

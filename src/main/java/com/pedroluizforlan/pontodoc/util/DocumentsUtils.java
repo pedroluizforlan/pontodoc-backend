@@ -1,12 +1,9 @@
 package com.pedroluizforlan.pontodoc.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
 import java.util.List;
 
 import org.apache.pdfbox.multipdf.Splitter;
@@ -14,30 +11,15 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pedroluizforlan.pontodoc.model.Collaborator;
+import com.pedroluizforlan.pontodoc.model.DocumentHR;
+import com.pedroluizforlan.pontodoc.model.DocumentHR.Attribution;
+import com.pedroluizforlan.pontodoc.model.DocumentHR.DocumentType;
 import com.pedroluizforlan.pontodoc.model.DocumentsBatch;
 import com.pedroluizforlan.pontodoc.model.DocumentsBatch.Status;
+import com.pedroluizforlan.pontodoc.model.dto.StoredFile;
 
 public class DocumentsUtils {
-
-    public static String saveFileAndCalculateHash(InputStream inputStream, Path targetPath) throws Exception {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-
-        try (DigestInputStream dis = new DigestInputStream(inputStream, digest)) {
-            Files.copy(dis, targetPath);
-        }
-
-        byte[] hashBytes = digest.digest();
-
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : hashBytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1)
-                hexString.append('0');
-            hexString.append(hex);
-        }
-
-        return hexString.toString();
-    }
 
     public static String extractTextFromDocument(PDDocument document) throws IOException {
         try {
@@ -60,24 +42,80 @@ public class DocumentsUtils {
         }
     }
 
-    public static DocumentsBatch createDocumentsBatchObject(MultipartFile multipartFile) {
-        Path path = Paths.get("/var/documentos/" + multipartFile.getOriginalFilename());
-
-        String hash;
+    public static DocumentsBatch createDocumentsBatchObject(MultipartFile multipartFile, StoredFile stFile) {
         try {
-            hash = DocumentsUtils.saveFileAndCalculateHash(multipartFile.getInputStream(), path);
-
             DocumentsBatch batch = new DocumentsBatch();
-
             batch.setName(multipartFile.getOriginalFilename());
-            batch.setOriginalHash(hash);
+            batch.setOriginalHash(stFile.hash());
             batch.setStatus(Status.RECIVED);
+            batch.setPath(stFile.path());
 
             return batch;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static DocumentHR createDocumentsHrObject(DocumentsBatch batch,
+            Collaborator collaborator, StoredFile stFile, String text, Attribution att) {
+        try {
+            DocumentHR hr = new DocumentHR();
+            hr.setDocument_batch(batch);
+            hr.setCollaborator(collaborator);
+            hr.setPath(stFile.path());
+            hr.setDocumentHash(stFile.hash());
+            hr.setStatus(com.pedroluizforlan.pontodoc.model.DocumentHR.Status.WAITING);
+            hr.setExtractedText(text);
+            hr.setDocumentType(getDocumentType(text));
+            hr.setAttribution(att);
+
+            return hr;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+        public static DocumentHR createDocumentsHrObject(DocumentsBatch batch, StoredFile stFile, String text) {
+        try {
+            DocumentHR hr = new DocumentHR();
+            hr.setDocument_batch(batch);
+            hr.setPath(stFile.path());
+            hr.setDocumentHash(stFile.hash());
+            hr.setStatus(com.pedroluizforlan.pontodoc.model.DocumentHR.Status.WAITING);
+            hr.setExtractedText(text);
+            hr.setDocumentType(getDocumentType(text));
+            hr.setAttribution(Attribution.ERROR);
+
+            return hr;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static InputStream pdDocumentToInputStream(PDDocument document) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        document.save(outputStream);
+
+        document.close();
+
+        return new ByteArrayInputStream(outputStream.toByteArray());
+    }
+
+    private static DocumentType getDocumentType(String text) {
+        if (text.substring(0, 100).contains("RECIBO DE VALE TRANSPORTE")) {
+            return DocumentType.TRANSPORT_RECEIPT;
+        } else if (text.substring(0, 100).contains("RECIBO DE VALE REFEIÇÃO")) {
+            return DocumentType.FOOD_RECEIPT;
+        } else if (text.substring(0, 100).contains("Recibo de Pagamento de Salário")) {
+            return DocumentType.PAY_STUB;
+        } else if (text.substring(0, 100).contains("DADOS DO EMPREGADOR")) {
+            return DocumentType.TIME_CARD;
+        } else {
+            return DocumentType.OTHER;
+        }
     }
 }

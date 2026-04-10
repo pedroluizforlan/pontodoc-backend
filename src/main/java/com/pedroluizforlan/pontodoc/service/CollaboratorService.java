@@ -16,4 +16,6 @@ public interface CollaboratorService {
     CollaboratorDTO update(Long id, Collaborator collaborator);
 
     CollaboratorDTO delete(Long id);
+
+    List<Collaborator> getAllNamesOfActivesCollaborators();
 }
