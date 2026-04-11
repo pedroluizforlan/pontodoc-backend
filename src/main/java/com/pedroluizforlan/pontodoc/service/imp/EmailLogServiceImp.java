@@ -19,7 +19,7 @@ public class EmailLogServiceImp {
     Collaborator collaborator = email.getCollaborator();
         
     var message = new SimpleMailMessage();
-        message.setFrom("noreply@pontodoc.com");
+        message.setFrom("pedro.forlan2000@edu.unifil.br");
         message.setTo(collaborator.getUser().getEmail());
         message.setSubject(email.getEmailSubject());
         message.setText(email.getEmailBody());

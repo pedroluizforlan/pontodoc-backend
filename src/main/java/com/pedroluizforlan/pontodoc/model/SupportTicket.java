@@ -10,29 +10,28 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "document_signed")
+@Table(name = "support_ticket")
 @Data
 @Setter
 @Getter
-public class DocumentSinged {
+public class SupportTicket {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    private StatusTicket status;
 
-    @Column(unique = false, nullable = false, name="original_hash")
-    private String originalHash;
+    private String subject;
 
-    @Column(unique = false, nullable = false, name="new_hash")
-    private String newHash;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-    @Column(nullable = false)
-    private String path;
+    private TicketType type;
 
-    @Column(name = "drive_url")
-    private String driveUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "collaborator_id", nullable = true)
+    private Collaborator collaborator;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -44,4 +43,12 @@ public class DocumentSinged {
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    enum TicketType{
+        TECHNICAL, ADM, RH
+    }
+
+    enum StatusTicket{
+        OPEN,ANALYSIS,CLOSED,WARNING
+    }
 }

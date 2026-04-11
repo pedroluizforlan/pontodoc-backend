@@ -21,7 +21,7 @@ import com.pedroluizforlan.pontodoc.service.PersonService;
 import com.pedroluizforlan.pontodoc.service.UserService;
 import com.pedroluizforlan.pontodoc.service.integrations.GoogleDriveService;
 
-
+//@TODO VALIDAR E OTIMIZAR
 @Service
 public class CollaboratorServiceImp implements CollaboratorService{
 
