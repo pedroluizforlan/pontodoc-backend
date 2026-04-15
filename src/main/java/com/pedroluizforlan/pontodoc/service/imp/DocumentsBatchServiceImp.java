@@ -120,7 +120,6 @@ public class DocumentsBatchServiceImp implements DocumentService, Crud<Long, Doc
 
     private List<Collaborator> getListOfActivesCollaborators() {
         try {
-
             return this.collaboratorService.getAllNamesOfActivesCollaborators();
         } catch (Exception e) {
             log.error("O Erro está aqui amigão [getListOfActivesCollaborators]: ", e);
@@ -136,6 +135,7 @@ public class DocumentsBatchServiceImp implements DocumentService, Crud<Long, Doc
             List<PDDocument> arquivosSemDonos = new ArrayList<>();
             List<PDDocument> comDono = new ArrayList<>();
             log.info("--- INICIANDO PROCESSO ---");
+
             for (PDDocument splitDoc : listOfArchives) {
 
                 PDFTextStripper stripper = new PDFTextStripper();

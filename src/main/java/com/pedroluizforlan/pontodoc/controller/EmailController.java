@@ -19,10 +19,10 @@ public class EmailController {
         this.emailLogService = emailLogService;
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
-    @PostMapping("/send")
-    public void sendEmail(@RequestBody EmailLog emailLog){
-        emailLogService.sendEmail(emailLog);
-    }
+//    @PreAuthorize("hasRole('MANAGER')")
+//    @PostMapping("/send")
+//    public void sendEmail(@RequestBody EmailLog emailLog){
+//        emailLogService.sendEmail(emailLog);
+//    }
     
 }

@@ -2,18 +2,11 @@ package com.pedroluizforlan.pontodoc.model;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "email_log")
@@ -30,8 +23,9 @@ public class EmailLog {
     @JoinColumn(name = "collaborator_id")
     private Collaborator collaborator;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="email_type")
-    private String emailType;
+    private EmailType emailType;
     
     @Column(name="email_subject")
     private String emailSubject;
@@ -39,6 +33,11 @@ public class EmailLog {
     @Column(name="email_body")
     private String emailBody;
 
+    @CreationTimestamp
     @Column(name = "send_at")
     private LocalDateTime sendAt;
+
+    public enum EmailType{
+        NEW_USER,SIGN_DOC
+    }
 }

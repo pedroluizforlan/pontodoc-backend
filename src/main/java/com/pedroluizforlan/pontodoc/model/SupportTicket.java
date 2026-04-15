@@ -27,6 +27,8 @@ public class SupportTicket {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="ticket_type")
     private TicketType type;
 
     @ManyToOne(fetch = FetchType.LAZY)

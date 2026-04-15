@@ -30,6 +30,8 @@ public class SupportTicketConversation {
     @Column(columnDefinition = "TEXT")
     private String text;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="ticket_role")
     private TicketRole ticketRole;
 
     @CreationTimestamp

@@ -118,4 +118,19 @@ public class DocumentsUtils {
             return DocumentType.OTHER;
         }
     }
+
+    public static String getTypeOfDocument(DocumentType documentType){
+        if (documentType.equals(DocumentType.TIME_CARD)){
+            return "CARTÃO PONTO";
+        } else if(documentType.equals(DocumentType.TRANSPORT_RECEIPT)){
+            return "RECIBO VALE TRANSPORTE";
+        } else if(documentType.equals(DocumentType.PAY_STUB)){
+            return "HOLERITE";
+        } else if (documentType.equals(DocumentType.FOOD_RECEIPT)) {
+            return "RECIBO VALE ALIMENTAÇÃO";
+        } else {
+            return "OUTROS";
+        }
+    }
+
 }

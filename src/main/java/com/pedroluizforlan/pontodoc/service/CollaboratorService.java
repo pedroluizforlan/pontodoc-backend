@@ -3,6 +3,7 @@ package com.pedroluizforlan.pontodoc.service;
 import java.util.List;
 
 import com.pedroluizforlan.pontodoc.model.Collaborator;
+import com.pedroluizforlan.pontodoc.model.dto.CollaboratorAndDocumentsToSignDTO;
 import com.pedroluizforlan.pontodoc.model.dto.CollaboratorDTO;
 
 public interface CollaboratorService {
@@ -18,4 +19,6 @@ public interface CollaboratorService {
     CollaboratorDTO delete(Long id);
 
     List<Collaborator> getAllNamesOfActivesCollaborators();
+
+    List<CollaboratorAndDocumentsToSignDTO> findCollaboratorsToSignDoc();
 }

@@ -74,6 +74,7 @@ public class DocumentHR {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "attribution")
     private Attribution attribution;
 

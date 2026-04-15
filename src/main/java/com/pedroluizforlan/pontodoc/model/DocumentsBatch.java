@@ -18,6 +18,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+
+//@TODO INCLUIR TIPO DE BATCH (MENSAL, OTHER)
 @ToString
 @Entity
 @Table(name = "documents_batch")

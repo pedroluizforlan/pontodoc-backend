@@ -1,9 +1,14 @@
 package com.pedroluizforlan.pontodoc.service.imp;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import com.pedroluizforlan.pontodoc.model.dto.CollaboratorAndDocumentsToSignDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +27,8 @@ import com.pedroluizforlan.pontodoc.service.UserService;
 import com.pedroluizforlan.pontodoc.service.integrations.GoogleDriveService;
 
 //@TODO VALIDAR E OTIMIZAR
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class CollaboratorServiceImp implements CollaboratorService{
 
@@ -33,23 +40,6 @@ public class CollaboratorServiceImp implements CollaboratorService{
     private final GoogleDriveService googleDriveService;
     private final CollaboratorMapper mapper;
 
-    public CollaboratorServiceImp(
-        CollaboratorRepository collaboratorRepository,
-        PersonService personService,
-        UserService userService,
-        EmailLogServiceImp emailLogServiceImp,
-        DriveIntegrationService driveIntegrationService,
-        GoogleDriveService googleDriveService,
-        CollaboratorMapper mapper
-        ){
-        this.collaboratorRepository = collaboratorRepository;
-        this.personService = personService;
-        this.userService = userService;
-        this.emailLogServiceImp = emailLogServiceImp;
-        this.driveIntegrationService = driveIntegrationService;
-        this.googleDriveService = googleDriveService;
-        this.mapper = mapper;
-    }
 
     @Override
     public List<CollaboratorDTO> findAll() {
@@ -73,29 +63,43 @@ public class CollaboratorServiceImp implements CollaboratorService{
     @Override
     @Transactional(rollbackFor = Exception.class)
     public CollaboratorDTO create(Collaborator collaborator) {
-        
-        Person cPerson = personService.create(collaborator.getPerson());
-        
-        var password = collaborator.getUser().getPassword();
-        User cUser = userService.create(collaborator.getUser());
-        
-        collaborator.setPerson(cPerson);
-        collaborator.setUser(cUser);
+        try{
+            Person cPerson = personService.create(collaborator.getPerson());
 
-        collaborator.setCreatedAt(LocalDateTime.now());
-        
-        var newCollaborator = collaboratorRepository.save(collaborator);
+            var password = collaborator.getUser().getPassword();
+            User cUser = userService.create(collaborator.getUser());
 
-        var email = this.createEmailLog(collaborator, password);
+            collaborator.setPerson(cPerson);
+            collaborator.setUser(cUser);
 
-        var folderId = googleDriveService.createFolderForCollaborator(collaborator.getPerson().getName());
-        var driveIntegration = this.createFolder(folderId, newCollaborator);
+            collaborator.setCreatedAt(LocalDateTime.now());
 
-        driveIntegrationService.create(driveIntegration);
-        // emailLogServiceImp.sendEmail(email);
+            var newCollaborator = collaboratorRepository.save(collaborator);
 
-        var collaboratorDTO = mapper.toDTO(newCollaborator);
-        return collaboratorDTO;
+            var folderId = googleDriveService.createFolderForCollaborator(collaborator.getPerson().getName());
+            var driveIntegration = this.createFolder(folderId, newCollaborator);
+
+            driveIntegrationService.create(driveIntegration);
+
+            //ENVIANDO EMAIL COM DADOS
+            Map<String, Object> props = new HashMap<>();
+            props.put("name", collaborator.getPerson().getName());
+            props.put("email", collaborator.getUser().getEmail());
+            props.put("password", password);
+
+            emailLogServiceImp.sendHtmlEmail(
+                    collaborator, EmailLog.EmailType.NEW_USER,
+                    "Bem-vindo ao sistema PontoDoc",
+                    "welcome-collaborator",
+                    props);
+
+            return mapper.toDTO(newCollaborator);
+
+        } catch (Exception e){
+            log.error("Ouve algum erro na criação de um novo colaborador");
+            throw new RuntimeException();
+        }
+
     }
 
     @Override
@@ -134,21 +138,6 @@ public class CollaboratorServiceImp implements CollaboratorService{
         return mapper.toDTO(deletedCollaborator);
     }
 
-
-    private EmailLog createEmailLog(Collaborator collaborator, String password){
-        EmailLog emailLog = new EmailLog();
-
-        emailLog.setCollaborator(collaborator);
-        emailLog.setEmailType("NEW USER");
-        emailLog.setEmailSubject("Bem-vindo ao sistema PontoDoc");
-        emailLog.setEmailBody("Seja bem vindo ao Sistema PontoDoc\n"
-        + "Seu usuário: " +collaborator.getUser().getEmail() + 
-        "\nSua senha: " + password
-        );
-
-        return emailLog;
-    }
-
     private DriveIntegration createFolder(String folderId, Collaborator collaborator){
         DriveIntegration driveIntegration = new DriveIntegration();
         driveIntegration.setCollaborator(collaborator);
@@ -160,5 +149,11 @@ public class CollaboratorServiceImp implements CollaboratorService{
     public List<Collaborator> getAllNamesOfActivesCollaborators(){
         return this.collaboratorRepository.gellAllNames();
     }
-    
+
+
+    public List<CollaboratorAndDocumentsToSignDTO> findCollaboratorsToSignDoc(){
+        return collaboratorRepository.findCollaboratorsToSignDoc();
+    }
+
+
 }
